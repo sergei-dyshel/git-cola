@@ -1174,10 +1174,12 @@ class Edit(CommandMixin):
         else:
             # Single-file w/ line-numbers (likely from grep)
             editor_opts = {
-                    '*vim*': [filename, '+'+self.line_number],
+                    '*q-clip*': [filename + ':' + self.line_number],
+                    '*vim*': ['+'+self.line_number, filename],
                     '*emacs*': ['+'+self.line_number, filename],
                     '*textpad*': ['%s(%s,0)' % (filename, self.line_number)],
                     '*notepad++*': ['-n'+self.line_number, filename],
+                    'q-edit-loc': [filename, self.line_number]
             }
 
             opts = self.filenames
@@ -1187,6 +1189,7 @@ class Edit(CommandMixin):
                     break
 
         try:
+            core.stderr('Running editor command: {}'.format(utils.shell_split(editor) + opts))
             core.fork(utils.shell_split(editor) + opts)
         except Exception as e:
             message = (N_('Cannot exec "%s": please configure your editor')

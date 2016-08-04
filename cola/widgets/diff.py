@@ -23,10 +23,12 @@ from .. import hotkeys
 from .. import icons
 from .. import utils
 from .. import qtutils
+from ..cmds import do
 from .text import TextDecorator
 from .text import VimHintedPlainTextEdit
 from . import defs
 from . import imageview
+from ..diffparse import DiffParser
 
 
 COMMITS_SELECTED = 'COMMITS_SELECTED'
@@ -619,7 +621,11 @@ class DiffEditor(DiffTextEdit):
             self, 'Revert', self.revert_selection, hotkeys.REVERT)
         self.action_revert_selection.setIcon(icons.undo())
 
-        self.launch_editor = actions.launch_editor(self, *hotkeys.ACCEPT)
+        self.launch_editor = actions.launch_editor(self)
+
+        self.edit_line_action = qtutils.add_action(
+            self, 'Launch Editor on Line', self.edit_line, *hotkeys.ACCEPT)
+
         self.launch_difftool = actions.launch_difftool(self, self.context)
         self.stage_or_unstage = actions.stage_or_unstage(self)
 
@@ -635,6 +641,11 @@ class DiffEditor(DiffTextEdit):
         selection_model.add_observer(selection_model.message_selection_changed,
                                      self.updated.emit)
         self.updated.connect(self.refresh, type=Qt.QueuedConnection)
+
+    def edit_line(self):
+        parser = DiffParser(self.model.filename, self.model.diff_text)
+        line_idx, _ = self.selected_lines()
+        do(cmds.Edit, [self.model.filename], str(parser.calc_new_line_number(line_idx)))
 
     def refresh(self):
         enabled = False
@@ -721,6 +732,7 @@ class DiffEditor(DiffTextEdit):
             if filename and core.exists(filename):
                 menu.addSeparator()
                 menu.addAction(self.launch_editor)
+                menu.addAction(self.edit_line_action)
 
             # Removed files can still be diffed.
             menu.addAction(self.launch_difftool)
