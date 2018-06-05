@@ -1174,6 +1174,7 @@ class Edit(CommandMixin):
         else:
             # Single-file w/ line-numbers (likely from grep)
             editor_opts = {
+                    '*q-clip*': [filename + ':' + self.line_number],
                     '*vim*': [filename, '+'+self.line_number],
                     '*emacs*': ['+'+self.line_number, filename],
                     '*textpad*': ['%s(%s,0)' % (filename, self.line_number)],
