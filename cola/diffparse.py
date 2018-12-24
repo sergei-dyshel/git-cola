@@ -243,6 +243,16 @@ class DiffParser(object):
         self.filename = filename
         self.hunks = _parse_diff(diff_text)
 
+    def calc_new_line_number(self, line_idx):
+        for hunk in self.hunks:
+            # print "hunk new_start {}, first_line_idx {}, last_line_idx {}".format(
+            #     hunk.new_start, hunk.first_line_idx, hunk.last_line_idx)
+            if hunk.last_line_idx < line_idx:
+                continue
+            assert hunk.first_line_idx <= line_idx
+            return hunk.new_start + (line_idx - hunk.first_line_idx) - 1
+        assert False, "line index {} out of any hunk".format(line_idx)
+
     def generate_patch(self, first_line_idx, last_line_idx,
                        reverse=False):
         """Return a patch containing a subset of the diff"""

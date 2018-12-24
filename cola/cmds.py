@@ -1235,11 +1235,13 @@ class Edit(ContextCommand):
         else:
             # Single-file w/ line-numbers (likely from grep)
             editor_opts = {
+                '*q-clip*': [filename + ':' + str(self.line_number)],
                 '*vim*': [filename, '+%s' % self.line_number],
                 '*emacs*': ['+%s' % self.line_number, filename],
                 '*textpad*': ['%s(%s,0)' % (filename, self.line_number)],
                 '*notepad++*': ['-n%s' % self.line_number, filename],
                 '*subl*': ['%s:%s' % (filename, self.line_number)],
+                'q-edit-loc': [filename, str(self.line_number)]
             }
 
             opts = self.filenames
@@ -1249,6 +1251,7 @@ class Edit(ContextCommand):
                     break
 
         try:
+            core.print_stderr('Running editor command: {}'.format(utils.shell_split(editor) + opts))
             core.fork(utils.shell_split(editor) + opts)
         except (OSError, ValueError) as e:
             message = (N_('Cannot exec "%s": please configure your editor')
