@@ -22,10 +22,12 @@ from .. import hotkeys
 from .. import icons
 from .. import utils
 from .. import qtutils
+from ..cmds import do
 from .text import TextDecorator
 from .text import VimHintedPlainTextEdit
 from . import defs
 from . import imageview
+from ..diffparse import DiffParser
 
 
 COMMITS_SELECTED = 'COMMITS_SELECTED'
