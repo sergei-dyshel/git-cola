@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Setup PATH for git-osx-installer and other common locations
 PATH="$PATH":/usr/local/bin:/usr/local/git/bin
 export PATH
@@ -7,4 +7,4 @@ export PATH
 macos="$(dirname "$0")"
 contents="$(dirname "$macos")"
 
-exec "$contents/Resources/bin/git-cola" --prompt
+exec "$contents/Resources/bin/git-cola" -r ${1:-.}
