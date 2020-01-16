@@ -67,6 +67,7 @@ class MainView(standard.MainWindow):
     def __init__(self, context, parent=None, settings=None):
         standard.MainWindow.__init__(self, parent)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowTitle('git-cola')
 
         self.context = context
         self.git = context.git
@@ -868,7 +869,7 @@ class MainView(standard.MainWindow):
         else:
             path_text = ''
 
-        title = '%s: %s %s%s' % (project, curbranch, alert_text, path_text)
+        title = 'git-cola %s: %s %s%s' % (project, curbranch, alert_text, path_text)
         self.setWindowTitle(title)
 
     def update_actions(self):
